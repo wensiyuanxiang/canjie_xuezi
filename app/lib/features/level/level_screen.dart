@@ -6,6 +6,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/audio/bgm_service.dart';
+import '../../core/constants/app_assets.dart';
 import '../../core/constants/route_paths.dart';
 import '../../core/theme/app_colors.dart';
 import '../../data/models/level_config.dart';
@@ -41,9 +43,21 @@ class _LevelScreenState extends ConsumerState<LevelScreen> {
   String? _spiritScheduledForLevelId;
   Timer? _spiritCollapseTimer;
 
+  late final ProviderContainer _container;
+
+  @override
+  void initState() {
+    super.initState();
+    _container = ProviderScope.containerOf(context, listen: false);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _container.read(bgmServiceProvider).play(BgmTrack.level);
+    });
+  }
+
   @override
   void dispose() {
     _spiritCollapseTimer?.cancel();
+    _container.read(bgmServiceProvider).play(BgmTrack.home);
     super.dispose();
   }
 
@@ -95,6 +109,7 @@ class _LevelScreenState extends ConsumerState<LevelScreen> {
         ref.watch(levelByIdProvider(widget.levelId));
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: levelAsync.when(
         data: (LevelConfig? config) {
           if (config == null) {
@@ -176,55 +191,70 @@ class _LevelScreenState extends ConsumerState<LevelScreen> {
                 )
               : null;
 
-          return Stack(
-            fit: StackFit.expand,
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              GameWidget(
-                key: ValueKey<String>(config.id),
-                game: game,
-              ),
               SafeArea(
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  child: ValueListenableBuilder<SliceHudSnapshot>(
-                    valueListenable: game.hudListenable,
-                    builder: (
-                      BuildContext context,
-                      SliceHudSnapshot snap,
-                      _,
-                    ) {
-                      return LevelHudBar(
-                        title: config.title,
-                        missionPhrase: config.missionPhrase,
-                        targetGlyph: config.targetGlyph,
-                        onExit: () => context.go(RoutePaths.worldMap),
-                        onFinishPlaceholder: () => game.exitToResultManually(),
-                        spiritCompact: spiritChip,
-                        status: snap,
-                      );
-                    },
-                  ),
+                bottom: false,
+                child: ValueListenableBuilder<SliceHudSnapshot>(
+                  valueListenable: game.hudListenable,
+                  builder: (
+                    BuildContext context,
+                    SliceHudSnapshot snap,
+                    _,
+                  ) {
+                    return LevelHudBar(
+                      title: config.title,
+                      missionPhrase: config.missionPhrase,
+                      targetGlyph: config.targetGlyph,
+                      onExit: () => context.go(RoutePaths.worldMap),
+                      onFinishPlaceholder: () => game.exitToResultManually(),
+                      spiritCompact: spiritChip,
+                      status: snap,
+                    );
+                  },
                 ),
               ),
-              if (_spiritExpanded)
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  child: SafeArea(
-                    top: false,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                      child: _LevelSpiritHintBar(
-                        text: config.kidHint,
-                        onCollapse: () {
-                          _spiritCollapseTimer?.cancel();
-                          setState(() => _spiritExpanded = false);
-                        },
+              Expanded(
+                child: Stack(
+                  fit: StackFit.expand,
+                  clipBehavior: Clip.none,
+                  children: <Widget>[
+                    Positioned.fill(
+                      child: Image.asset(
+                        AppAssets.bgMountainGray,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => const ColoredBox(
+                          color: AppColors.bg,
+                        ),
                       ),
                     ),
-                  ),
+                    GameWidget(
+                      key: ValueKey<String>(config.id),
+                      game: game,
+                    ),
+                    if (_spiritExpanded)
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        child: SafeArea(
+                          top: false,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                            child: _LevelSpiritHintBar(
+                              text: config.kidHint,
+                              onCollapse: () {
+                                _spiritCollapseTimer?.cancel();
+                                setState(() => _spiritExpanded = false);
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
+              ),
             ],
           );
         },
@@ -271,61 +301,52 @@ class _LevelSpiritHintBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return DecoratedBox(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
+        color: AppColors.ink.withValues(alpha: 0.52),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: const Color(0xFFE8F4F8),
-          width: 4,
+          color: AppColors.gold.withValues(alpha: 0.45),
         ),
-        boxShadow: const <BoxShadow>[
+        boxShadow: <BoxShadow>[
           BoxShadow(
-            color: Colors.black12,
-            blurRadius: 10,
-            offset: Offset(0, 4),
+            color: AppColors.ink.withValues(alpha: 0.12),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: const BoxDecoration(
-                color: Color(0xFFFFF3E0),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.pets_rounded,
-                color: Color(0xFFFF9800),
-                size: 28,
-              ),
+            Icon(
+              Icons.pets_rounded,
+              color: AppColors.gold.withValues(alpha: 0.95),
+              size: 22,
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 8),
             Expanded(
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  const Text(
-                    '字灵悄悄说...',
-                    style: TextStyle(
-                      color: Color(0xFFFF9800),
-                      fontWeight: FontWeight.w900,
-                      fontSize: 15,
-                    ),
+                  Text(
+                    '字灵悄悄说',
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          color: AppColors.parchment.withValues(alpha: 0.95),
+                          fontWeight: FontWeight.w800,
+                        ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     text,
-                    style: const TextStyle(
-                      color: Color(0xFF4A4A4A),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w800,
-                      height: 1.4,
-                    ),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: AppColors.parchment.withValues(alpha: 0.92),
+                          fontSize: 13,
+                          height: 1.4,
+                        ),
                   ),
                 ],
               ),
@@ -337,17 +358,10 @@ class _LevelSpiritHintBar extends StatelessWidget {
                 minWidth: 40,
                 minHeight: 40,
               ),
-              icon: Container(
-                padding: const EdgeInsets.all(4),
-                decoration: const BoxDecoration(
-                  color: Color(0xFFF5F5F5),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.keyboard_arrow_down_rounded,
-                  color: Color(0xFF9E9E9E),
-                  size: 24,
-                ),
+              icon: Icon(
+                Icons.keyboard_arrow_down_rounded,
+                color: AppColors.parchment.withValues(alpha: 0.85),
+                size: 24,
               ),
               tooltip: '收起提示',
             ),

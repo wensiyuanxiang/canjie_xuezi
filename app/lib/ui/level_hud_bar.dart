@@ -4,6 +4,7 @@ import '../core/theme/app_colors.dart';
 import '../game/slice_hud_snapshot.dart';
 import 'level_status_strip.dart';
 
+/// 单行横条顶栏：不占大块方块区域。
 class LevelHudBar extends StatelessWidget {
   const LevelHudBar({
     super.key,
@@ -27,134 +28,94 @@ class LevelHudBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.fromLTRB(10, 4, 10, 6),
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(32),
+          color: AppColors.hudBar.withValues(alpha: 0.94),
+          borderRadius: BorderRadius.circular(999),
           border: Border.all(
-            color: const Color(0xFFE8F4F8),
-            width: 4,
+            color: AppColors.gold.withValues(alpha: 0.45),
+            width: 1,
           ),
-          boxShadow: const <BoxShadow>[
+          boxShadow: <BoxShadow>[
             BoxShadow(
-              color: Colors.black12,
-              blurRadius: 16,
-              offset: Offset(0, 8),
+              color: AppColors.ink.withValues(alpha: 0.08),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
             ),
           ],
         ),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(8, 12, 12, 12),
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               _HudIconButton(
                 icon: Icons.close_rounded,
                 onPressed: onExit,
-                color: const Color(0xFFFF5252),
+                color: const Color(0xFFE53935),
               ),
               Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Flexible(
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 120),
+                        child: Text(
+                          title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style:
+                              Theme.of(context).textTheme.titleSmall?.copyWith(
+                                    color: AppColors.ink,
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 15,
+                                    height: 1.1,
+                                  ),
+                        ),
+                      ),
+                      if (spiritCompact != null) ...<Widget>[
+                        const SizedBox(width: 6),
+                        spiritCompact!,
+                      ],
+                      const SizedBox(width: 8),
+                      Tooltip(
+                        message: missionPhrase,
+                        triggerMode: TooltipTriggerMode.longPress,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 3,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.primaryDeep,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                           child: Text(
-                            title,
-                            textAlign: TextAlign.center,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                            targetGlyph,
                             style: const TextStyle(
-                              color: Color(0xFF2C3E50),
+                              fontSize: 17,
                               fontWeight: FontWeight.w900,
-                              fontSize: 18,
-                              letterSpacing: 1.0,
+                              color: Colors.white,
+                              height: 1,
                             ),
                           ),
                         ),
-                        if (spiritCompact != null) ...<Widget>[
-                          const SizedBox(width: 8),
-                          spiritCompact!,
-                        ],
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 6,
-                          ),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFFFB74D),
-                            borderRadius: BorderRadius.circular(16),
-                            boxShadow: const <BoxShadow>[
-                              BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 4,
-                                offset: Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              Text(
-                                targetGlyph,
-                                style: const TextStyle(
-                                  fontSize: 26,
-                                  fontWeight: FontWeight.w900,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Text(
-                                missionPhrase,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w900,
-                                  color: Colors.white,
-                                  letterSpacing: 1.0,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    if (!status.ended) ...<Widget>[
-                      const SizedBox(height: 12),
-                      DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF5F9FF),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 8,
-                          ),
-                          child: LevelHudStatusChips(snapshot: status),
-                        ),
                       ),
+                      if (!status.ended) ...<Widget>[
+                        const SizedBox(width: 10),
+                        LevelHudStatusInline(snapshot: status),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
               ),
-              Column(
-                children: <Widget>[
-                  const SizedBox(height: 4),
-                  _HudIconButton(
-                    icon: Icons.fast_forward_rounded,
-                    onPressed: onFinishPlaceholder,
-                    color: const Color(0xFF4CAF50),
-                  ),
-                ],
+              _HudIconButton(
+                icon: Icons.fast_forward_rounded,
+                onPressed: onFinishPlaceholder,
+                color: AppColors.success,
               ),
             ],
           ),
@@ -177,21 +138,16 @@ class _HudIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.15),
-        shape: BoxShape.circle,
-      ),
-      child: Material(
-        color: Colors.transparent,
-        shape: const CircleBorder(),
-        child: InkWell(
-          customBorder: const CircleBorder(),
-          onTap: onPressed,
-          child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: Icon(icon, color: color, size: 26),
-          ),
+    return Material(
+      color: color.withValues(alpha: 0.12),
+      shape: const CircleBorder(),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        customBorder: const CircleBorder(),
+        onTap: onPressed,
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Icon(icon, color: color, size: 20),
         ),
       ),
     );

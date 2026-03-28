@@ -15,6 +15,7 @@ class MapStampNode extends StatefulWidget {
     required this.isCompleted,
     required this.isCurrent,
     required this.onTap,
+    this.lockedSnackMessage,
   });
 
   final String indexLabel;
@@ -27,6 +28,9 @@ class MapStampNode extends StatefulWidget {
   final bool isCompleted;
   final bool isCurrent;
   final VoidCallback onTap;
+
+  /// 锁定态点按时提示；为 null 时使用「先通关上一关…」。
+  final String? lockedSnackMessage;
 
   @override
   State<MapStampNode> createState() => _MapStampNodeState();
@@ -41,7 +45,7 @@ class _MapStampNodeState extends State<MapStampNode>
     super.initState();
     _pulse = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1200),
+      duration: const Duration(milliseconds: 1000),
     );
     if (widget.isCurrent && !widget.isLocked) {
       _pulse.repeat(reverse: true);
@@ -69,21 +73,30 @@ class _MapStampNodeState extends State<MapStampNode>
 
   @override
   Widget build(BuildContext context) {
-    final double diameter = widget.isBoss ? 92 : 76;
+    final double diameter = widget.isBoss ? 80 : 64;
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: widget.isLocked
             ? () {
+                final String msg = widget.lockedSnackMessage ??
+                    '先通关上一关，这里就会解锁啦！';
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('先通关上一关，这里就会解锁啦！'),
+                  SnackBar(
+                    content: Text(
+                      msg,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    backgroundColor: Colors.orange.shade400,
                     behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                   ),
                 );
               }
             : widget.onTap,
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(24),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
           child: Row(
@@ -93,7 +106,7 @@ class _MapStampNodeState extends State<MapStampNode>
                 animation: _pulse,
                 builder: (BuildContext context, Widget? child) {
                   final double scale =
-                      widget.isCurrent && !widget.isLocked ? 1.0 + _pulse.value * 0.06 : 1.0;
+                      widget.isCurrent && !widget.isLocked ? 1.0 + _pulse.value * 0.1 : 1.0;
                   return Transform.scale(
                     scale: scale,
                     child: child,
@@ -108,82 +121,112 @@ class _MapStampNodeState extends State<MapStampNode>
                   isCurrent: widget.isCurrent,
                 ),
               ),
-              const SizedBox(width: 14),
+              const SizedBox(width: 16),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Text(
-                            widget.title,
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  fontSize: widget.isBoss ? 17 : 16,
-                                  color: widget.isLocked
-                                      ? AppColors.grayBlue
-                                      : AppColors.ink,
-                                ),
-                          ),
-                        ),
-                        if (widget.isCompleted)
-                          Icon(
-                            Icons.star_rounded,
-                            color: AppColors.gold,
-                            size: 22,
-                          ),
-                      ],
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: widget.isCurrent
+                          ? const Color(0xFFFFB74D) // Orange for current
+                          : const Color(0xFFEEEEEE),
+                      width: widget.isCurrent ? 3 : 2,
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      widget.mapPosition,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.primaryDeep,
-                          ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      widget.mapTeaser,
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    const SizedBox(height: 8),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 8,
+                    boxShadow: const <BoxShadow>[
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 8,
+                        offset: Offset(0, 4),
                       ),
-                      decoration: BoxDecoration(
-                        color: AppColors.success.withValues(alpha: 0.08),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: AppColors.success.withValues(alpha: 0.22),
-                        ),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Row(
                         children: <Widget>[
-                          Icon(
-                            Icons.lightbulb_outline_rounded,
-                            size: 18,
-                            color: AppColors.success.withValues(alpha: 0.9),
-                          ),
-                          const SizedBox(width: 8),
                           Expanded(
                             child: Text(
-                              widget.kidHint,
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    fontSize: 12,
-                                    height: 1.35,
-                                    color: AppColors.inkMuted,
-                                  ),
+                              widget.title,
+                              style: TextStyle(
+                                fontSize: widget.isBoss ? 18 : 16,
+                                fontWeight: FontWeight.w900,
+                                color: widget.isLocked
+                                    ? Colors.grey.shade400
+                                    : const Color(0xFF2C3E50),
+                              ),
                             ),
                           ),
+                          if (widget.isCompleted)
+                            const Icon(
+                              Icons.star_rounded,
+                              color: Color(0xFFFFC107),
+                              size: 28,
+                            ),
+                          if (widget.isLocked)
+                            Icon(
+                              Icons.lock_rounded,
+                              color: Colors.grey.shade300,
+                              size: 24,
+                            ),
                         ],
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 6),
+                      Text(
+                        widget.mapPosition,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.primaryDeep,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        widget.mapTeaser,
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 10,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFFF8E1), // Light yellow hint box
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            const Icon(
+                              Icons.lightbulb_rounded,
+                              size: 20,
+                              color: Color(0xFFFFB300),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                widget.kidHint,
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w700,
+                                  height: 1.4,
+                                  color: Color(0xFF6D4C41),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -213,14 +256,26 @@ class _StampSeal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color borderColor = isLocked
-        ? AppColors.grayBlue.withValues(alpha: 0.45)
-        : isCurrent
-            ? AppColors.primary
-            : isBoss
-                ? AppColors.gold
-                : AppColors.gold.withValues(alpha: 0.55);
-    final double borderWidth = isCurrent ? 3.2 : (isBoss ? 3 : 2.5);
+    // Generate lovely gradient colors for bubbles
+    late final List<Color> gradientColors;
+    late final Color strokeColor;
+
+    if (isLocked) {
+      gradientColors = <Color>[Colors.grey.shade200, Colors.grey.shade300];
+      strokeColor = Colors.grey.shade400;
+    } else if (isCompleted) {
+      gradientColors = <Color>[const Color(0xFFA5D6A7), const Color(0xFF66BB6A)];
+      strokeColor = const Color(0xFF43A047);
+    } else if (isCurrent) {
+      gradientColors = <Color>[const Color(0xFFFFCC80), const Color(0xFFFFA726)];
+      strokeColor = const Color(0xFFFB8C00);
+    } else if (isBoss) {
+      gradientColors = <Color>[const Color(0xFFCE93D8), const Color(0xFFAB47BC)];
+      strokeColor = const Color(0xFF8E24AA);
+    } else {
+      gradientColors = <Color>[const Color(0xFF90CAF9), const Color(0xFF42A5F5)];
+      strokeColor = const Color(0xFF1E88E5);
+    }
 
     return Container(
       width: diameter,
@@ -230,50 +285,35 @@ class _StampSeal extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: isLocked
-              ? <Color>[
-                  AppColors.grayBlue.withValues(alpha: 0.12),
-                  AppColors.grayBlue.withValues(alpha: 0.2),
-                ]
-              : isBoss
-                  ? <Color>[
-                      AppColors.parchment,
-                      AppColors.gold.withValues(alpha: 0.35),
-                    ]
-                  : <Color>[
-                      AppColors.parchment,
-                      AppColors.parchmentDeep,
-                    ],
+          colors: gradientColors,
         ),
-        border: Border.all(color: borderColor, width: borderWidth),
+        border: Border.all(color: Colors.white, width: 4),
         boxShadow: <BoxShadow>[
-          if (isCurrent && !isLocked)
-            BoxShadow(
-              color: AppColors.primary.withValues(alpha: 0.35),
-              blurRadius: 16,
-              spreadRadius: 0,
-            ),
           BoxShadow(
-            color: AppColors.ink.withValues(alpha: 0.1),
-            blurRadius: isBoss ? 14 : 8,
-            offset: const Offset(0, 4),
+            color: strokeColor.withValues(alpha: 0.5),
+            blurRadius: 0,
+            offset: const Offset(0, 4), // Solid offset for 3D bubbly look
           ),
+          if (isCurrent)
+            BoxShadow(
+              color: strokeColor.withValues(alpha: 0.4),
+              blurRadius: 12,
+              spreadRadius: 2,
+            ),
         ],
       ),
       alignment: Alignment.center,
       child: isLocked
-          ? Icon(Icons.lock_rounded, color: AppColors.grayBlue, size: 28)
+          ? const Icon(Icons.lock_rounded, color: Colors.white, size: 28)
           : isCompleted
-              ? Icon(Icons.check_rounded, color: AppColors.success, size: 32)
+              ? const Icon(Icons.check_rounded, color: Colors.white, size: 36)
               : Text(
                   label,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: isBoss ? 14 : 12,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.ink,
-                    letterSpacing: isBoss ? 1.0 : 0.4,
-                    height: 1.1,
+                    fontSize: isBoss ? 16 : 20,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.white,
                   ),
                 ),
     );
@@ -288,23 +328,15 @@ class MapPathConnector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 38),
+      padding: const EdgeInsets.only(left: 36, top: 4, bottom: 4),
       child: Align(
         alignment: Alignment.centerLeft,
         child: Container(
-          width: 3,
-          height: 18,
+          width: 8,
+          height: 24,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(2),
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: <Color>[
-                AppColors.gold.withValues(alpha: dim ? 0.08 : 0.15),
-                AppColors.gold.withValues(alpha: dim ? 0.25 : 0.55),
-                AppColors.gold.withValues(alpha: dim ? 0.08 : 0.15),
-              ],
-            ),
+            color: dim ? Colors.grey.shade300 : const Color(0xFFFFB74D), // Sunny orange path
+            borderRadius: BorderRadius.circular(4),
           ),
         ),
       ),

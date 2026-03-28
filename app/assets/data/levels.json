@@ -1,0 +1,74 @@
+[
+  {
+    "id": "level-1",
+    "order": 1,
+    "title": "山石初醒",
+    "targetCharacterIds": ["char-shan"],
+    "targetGlyph": "山",
+    "missionPhrase": "切开山字",
+    "kidHint": "山字像三座山峰，中间那座最高！找到它切开吧~",
+    "repairStory": "山脉苏醒，灰白的峰峦重新披上翠绿。",
+    "mapPosition": "bottom-left",
+    "mapTeaser": "沉睡的山峰等待唤醒…"
+  },
+  {
+    "id": "level-2",
+    "order": 2,
+    "title": "溪水潺潺",
+    "targetCharacterIds": ["char-shui"],
+    "targetGlyph": "水",
+    "missionPhrase": "切开水字",
+    "kidHint": "水字像一条小溪在流淌，中间一竖是水流~",
+    "repairStory": "清澈的溪流从山涧涌出，石间泛起涟漪。",
+    "mapPosition": "center-left",
+    "mapTeaser": "干涸的溪床渴望流水…"
+  },
+  {
+    "id": "level-3",
+    "order": 3,
+    "title": "林木葱茏",
+    "targetCharacterIds": ["char-mu"],
+    "targetGlyph": "木",
+    "missionPhrase": "切开木字",
+    "kidHint": "木字像一棵树，上面是树枝，下面是树根哦~",
+    "repairStory": "一棵棵大树从土里长出，山野重新被绿意覆盖。",
+    "mapPosition": "center",
+    "mapTeaser": "光秃的山坡只剩枯枝…"
+  },
+  {
+    "id": "level-4",
+    "order": 4,
+    "title": "薪火燎原",
+    "targetCharacterIds": ["char-huo"],
+    "targetGlyph": "火",
+    "missionPhrase": "切开火字",
+    "kidHint": "火字像跳动的火苗，两边是火舌，中间是火心~",
+    "repairStory": "篝火点亮山谷，温暖的光芒驱散了灰暗。",
+    "mapPosition": "center-right",
+    "mapTeaser": "冰冷的山谷需要温暖…"
+  },
+  {
+    "id": "level-5",
+    "order": 5,
+    "title": "厚土归元",
+    "targetCharacterIds": ["char-tu"],
+    "targetGlyph": "土",
+    "missionPhrase": "切开土字",
+    "kidHint": "土字像一个十字架插在地上，那就是大地呀~",
+    "repairStory": "肥沃的土壤重现，小草从地面钻出。",
+    "mapPosition": "top-left",
+    "mapTeaser": "贫瘠的大地等待复苏…"
+  },
+  {
+    "id": "level-6-boss",
+    "order": 6,
+    "title": "巨石字灵",
+    "targetCharacterIds": ["char-shi"],
+    "targetGlyph": "石",
+    "missionPhrase": "切开石字",
+    "kidHint": "石字上面是山崖，下面是一块大石头！用力切吧~",
+    "repairStory": "巨石字灵被解放，山野世界完整恢复彩色啦！",
+    "mapPosition": "top-right",
+    "mapTeaser": "巨石字灵封印着最后的色彩…"
+  }
+]

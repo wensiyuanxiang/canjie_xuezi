@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/audio/bgm_service.dart';
 import '../../core/constants/route_paths.dart';
 import '../../core/theme/app_colors.dart';
 import '../../data/models/character_record.dart';
@@ -11,11 +12,25 @@ import '../../data/providers/game_data_providers.dart';
 import '../../ui/game_action_button.dart';
 import 'home_hero_illustration.dart';
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(bgmServiceProvider).play(BgmTrack.home);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final WidgetRef ref = this.ref;
     final GameProgressState progress = ref.watch(gameProgressProvider);
     final AsyncValue<List<LevelConfig>> levelsAsync = ref.watch(levelsListProvider);
     final AsyncValue<List<CharacterRecord>> charsAsync =
@@ -88,7 +103,7 @@ class HomeScreen extends ConsumerWidget {
                           ],
                         ),
                         child: const Text(
-                          '仓颉学字',
+                          '仓颉切字',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w900,
@@ -120,12 +135,12 @@ class HomeScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 16),
                   const _HeroTitle(),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 8),
                   const Text(
                     '举起手指，让文字归来！',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 18,
                       fontWeight: FontWeight.w900,
                       color: Color(0xFF2C3E50),
                       letterSpacing: 1.0,
@@ -322,39 +337,42 @@ class _HeroTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Stack(
+        alignment: Alignment.center,
         children: <Widget>[
-          // Stroke (outline)
+          // Glowing/Shadow outline
           Text(
-            '山野冒险',
+            '仓颉切字',
             style: TextStyle(
               fontSize: 48,
               fontWeight: FontWeight.w900,
-              letterSpacing: 4,
+              letterSpacing: 2,
+              fontFamily: 'ZhiMangXing',
               foreground: Paint()
                 ..style = PaintingStyle.stroke
-                ..strokeWidth = 8
-                ..color = Colors.white,
+                ..strokeWidth = 10
+                ..color = Colors.white.withValues(alpha: 0.9),
             ),
           ),
-          // Gradient fill
+          // Gradient fill suitable for kids
           ShaderMask(
             blendMode: BlendMode.srcIn,
             shaderCallback: (Rect bounds) {
               return const LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
                 colors: <Color>[
-                  Color(0xFFFF5F6D), // Vibrant red/pink
-                  Color(0xFFFFC371), // Vibrant yellow
+                  Color(0xFFFF9A9E), // soft rosy
+                  Color(0xFFFECFEF), // pale pink
+                  Color(0xFFFCCB90), // pastel orange
                 ],
               ).createShader(bounds);
             },
             child: const Text(
-              '山野冒险',
+              '仓颉切字',
               style: TextStyle(
                 fontSize: 48,
                 fontWeight: FontWeight.w900,
-                letterSpacing: 4,
+                letterSpacing: 2,
                 color: Colors.white,
               ),
             ),
@@ -364,3 +382,4 @@ class _HeroTitle extends StatelessWidget {
     );
   }
 }
+

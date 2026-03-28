@@ -1,0 +1,8 @@
+[
+  { "id": "char-shan", "glyph": "山", "pinyin": "shān", "meaning": "山峰" },
+  { "id": "char-shui", "glyph": "水", "pinyin": "shuǐ", "meaning": "河水" },
+  { "id": "char-mu", "glyph": "木", "pinyin": "mù", "meaning": "树木" },
+  { "id": "char-huo", "glyph": "火", "pinyin": "huǒ", "meaning": "火焰" },
+  { "id": "char-tu", "glyph": "土", "pinyin": "tǔ", "meaning": "泥土" },
+  { "id": "char-shi", "glyph": "石", "pinyin": "shí", "meaning": "石头" }
+]
