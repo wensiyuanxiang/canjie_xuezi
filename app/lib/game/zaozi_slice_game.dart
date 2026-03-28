@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:math';
 
 import 'package:flame/events.dart';
@@ -64,14 +65,29 @@ class ZaoziSliceGame extends FlameGame with PanDetector {
 
   final Vector2 _viewBase = Vector2.zero();
   double _shakeT = 0;
+  final ListQueue<double> _recentSpawnXs = ListQueue<double>();
 
   double _elapsed = 0;
   double _itemCooldown = 8.0;
 
-  double get _playXMin => 56;
+  Rect get _visiblePlayRect {
+    final Rect rect = camera.parent != null
+        ? camera.visibleWorldRect
+        : Rect.fromLTWH(0, 0, size.x, size.y);
+    final double left = rect.left + 44;
+    final double right = rect.right - 44;
+    return Rect.fromLTRB(min(left, right - 1), rect.top, max(right, left + 1), rect.bottom);
+  }
 
-  /// Keep a positive span when [size.x] is small (split view / odd resize).
-  double get _playXMax => max(_playXMin + 40, size.x - 56);
+  double get _screenCenterX => _visiblePlayRect.center.dx;
+
+  double get _recentSpawnAverageX {
+    if (_recentSpawnXs.isEmpty) {
+      return _screenCenterX;
+    }
+    return _recentSpawnXs.reduce((double a, double b) => a + b) /
+        _recentSpawnXs.length;
+  }
 
   double get _difficulty {
     final double progress = _elapsed / _totalTime;
@@ -224,6 +240,33 @@ class ZaoziSliceGame extends FlameGame with PanDetector {
     );
   }
 
+  void _rememberSpawnX(double x) {
+    _recentSpawnXs.addLast(x);
+    while (_recentSpawnXs.length > 8) {
+      _recentSpawnXs.removeFirst();
+    }
+  }
+
+  /// Strong center-bias with adaptive correction: if recent glyphs drift to one
+  /// side, nudge the next center in the opposite direction.
+  double _sampleSpawnX({double spread = 0.35}) {
+    final Rect playRect = _visiblePlayRect;
+    final double screenCenter = playRect.center.dx;
+    final double drift = _recentSpawnAverageX - screenCenter;
+    final double correctedCenter =
+        (screenCenter - drift * 0.55).clamp(playRect.left + 20, playRect.right - 20);
+    final double halfBand = (playRect.width / 2) * spread;
+    // Sum of three uniforms gives a steeper peak than a simple triangle.
+    final double t = (_random.nextDouble() +
+            _random.nextDouble() +
+            _random.nextDouble()) /
+        3;
+    final double x =
+        (correctedCenter + (t - 0.5) * 2 * halfBand).clamp(playRect.left, playRect.right);
+    _rememberSpawnX(x);
+    return x;
+  }
+
   void _trySpawnItem() {
     if (_elapsed < 5) {
       return;
@@ -247,22 +290,24 @@ class ZaoziSliceGame extends FlameGame with PanDetector {
     required GlyphType type,
   }) {
     final double gravity = _currentGravity;
-    final bool centerBias =
+    final bool isMissionTarget =
         type == GlyphType.target && isTarget;
-    final double span = _playXMax - _playXMin;
-    final double x0 = centerBias
-        ? _playXMin +
-            ((_random.nextDouble() + _random.nextDouble()) / 2) * span
-        : _playXMin + _random.nextDouble() * span;
+    final double spread = switch (type) {
+      GlyphType.target => 0.28,
+      GlyphType.distractor => 0.34,
+      GlyphType.bomb || GlyphType.timeBonus => 0.24,
+    };
+    final double x0 = _sampleSpawnX(spread: spread);
     final double y0 = size.y * (0.90 + _random.nextDouble() * 0.08);
     final double riseMin = y0 - size.y * 0.12;
     final double riseMax = y0 + 40;
     final double vMin = sqrt(2 * gravity * riseMin);
     final double vMax = sqrt(2 * gravity * riseMax);
     final double upwardSpeed = vMin + _random.nextDouble() * (vMax - vMin);
-    final double vxBase =
-        (-1.0 + 2 * _random.nextDouble()) * (80 + _random.nextDouble() * 120);
-    final double vx = centerBias ? vxBase * 0.5 : vxBase;
+    // Add a weak spring toward screen center so glyphs don't live on one side.
+    final double centerPull = (_screenCenterX - x0) * 0.18;
+    final double vx = centerPull +
+        (-1.0 + 2 * _random.nextDouble()) * (isMissionTarget ? 14 : 24);
 
     world.add(
       FlyingGlyph(
