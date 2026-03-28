@@ -1,0 +1,38 @@
+[
+  {
+    "id": "char-shan",
+    "glyph": "山",
+    "pinyin": "shān",
+    "meaning": "mountain"
+  },
+  {
+    "id": "char-shui",
+    "glyph": "水",
+    "pinyin": "shuǐ",
+    "meaning": "water"
+  },
+  {
+    "id": "char-mu",
+    "glyph": "木",
+    "pinyin": "mù",
+    "meaning": "wood"
+  },
+  {
+    "id": "char-huo",
+    "glyph": "火",
+    "pinyin": "huǒ",
+    "meaning": "fire"
+  },
+  {
+    "id": "char-tu",
+    "glyph": "土",
+    "pinyin": "tǔ",
+    "meaning": "earth"
+  },
+  {
+    "id": "char-shi",
+    "glyph": "石",
+    "pinyin": "shí",
+    "meaning": "stone"
+  }
+]
