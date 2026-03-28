@@ -1,0 +1,129 @@
+[
+  {
+    "id": "level-1",
+    "epoch": 1,
+    "world": "mountain",
+    "level": 1,
+    "title": "山醒了",
+    "mode": "recognize_shape",
+    "durationSec": 30,
+    "newChars": ["山"],
+    "targetChars": [{ "char": "山", "count": 12 }],
+    "distractorChars": [],
+    "hangTime": 2.8,
+    "maxSimultaneous": 1,
+    "passCondition": { "type": "slice_count", "char": "山", "count": 6 },
+    "objectiveText": "切开“山”，让远山重新显形。",
+    "repairPreview": "远山出现了第一道轮廓。"
+  },
+  {
+    "id": "level-2",
+    "epoch": 1,
+    "world": "mountain",
+    "level": 2,
+    "title": "河流归位",
+    "mode": "recognize_shape",
+    "durationSec": 35,
+    "newChars": ["水"],
+    "targetChars": [{ "char": "水", "count": 12 }],
+    "distractorChars": [{ "char": "山", "count": 8 }],
+    "hangTime": 2.5,
+    "maxSimultaneous": 2,
+    "passCondition": { "type": "slice_count", "char": "水", "count": 7 },
+    "objectiveText": "切开“水”，放过已经学会的“山”。",
+    "repairPreview": "河流沿着山脚亮起淡蓝色光。"
+  },
+  {
+    "id": "level-3",
+    "epoch": 1,
+    "world": "mountain",
+    "level": 3,
+    "title": "听见山水",
+    "mode": "listen",
+    "durationSec": 35,
+    "newChars": [],
+    "targetChars": [
+      { "char": "山", "count": 6 },
+      { "char": "水", "count": 6 }
+    ],
+    "distractorChars": [
+      { "char": "出", "count": 5 },
+      { "char": "永", "count": 5 }
+    ],
+    "hangTime": 2.4,
+    "maxSimultaneous": 2,
+    "passCondition": { "type": "slice_count", "count": 8, "total": 8 },
+    "objectiveText": "听字灵念音，切中对应的字。",
+    "repairPreview": "山谷里出现了会流动的水声。"
+  },
+  {
+    "id": "level-4",
+    "epoch": 1,
+    "world": "mountain",
+    "level": 4,
+    "title": "木火初生",
+    "mode": "recognize_shape",
+    "durationSec": 40,
+    "newChars": ["木", "火"],
+    "targetChars": [
+      { "char": "木", "count": 8 },
+      { "char": "火", "count": 8 }
+    ],
+    "distractorChars": [
+      { "char": "山", "count": 4 },
+      { "char": "水", "count": 4 },
+      { "char": "大", "count": 4 }
+    ],
+    "hangTime": 2.2,
+    "maxSimultaneous": 3,
+    "passCondition": { "type": "slice_count", "count": 8, "total": 8 },
+    "objectiveText": "切开“木”和“火”，让林木与篝火归来。",
+    "repairPreview": "山坡长出了树木，山谷燃起微暖火光。"
+  },
+  {
+    "id": "level-5",
+    "epoch": 1,
+    "world": "mountain",
+    "level": 5,
+    "title": "厚土稳住",
+    "mode": "radical",
+    "durationSec": 40,
+    "newChars": ["土", "石"],
+    "targetChars": [
+      { "char": "土", "count": 8 },
+      { "char": "石", "count": 6 }
+    ],
+    "distractorChars": [
+      { "char": "山", "count": 4 },
+      { "char": "木", "count": 4 },
+      { "char": "火", "count": 4 }
+    ],
+    "hangTime": 2.1,
+    "maxSimultaneous": 3,
+    "passCondition": { "type": "slice_count", "count": 8, "total": 8 },
+    "objectiveText": "切开带来土地与岩石力量的字石。",
+    "repairPreview": "土地稳住了山势，石壁重新显现纹理。"
+  },
+  {
+    "id": "level-6-boss",
+    "epoch": 1,
+    "world": "mountain",
+    "level": 6,
+    "title": "林之解封",
+    "mode": "boss",
+    "durationSec": 45,
+    "newChars": ["林"],
+    "targetChars": [{ "char": "木", "count": 14 }],
+    "distractorChars": [
+      { "char": "山", "count": 4 },
+      { "char": "火", "count": 4 }
+    ],
+    "hangTime": 2,
+    "maxSimultaneous": 3,
+    "passCondition": { "type": "boss_charge", "count": 6 },
+    "objectiveText": "切中飞来的“木”，唤醒中央的“林”。",
+    "repairPreview": "整片山野彻底从灰白变成了有生机的彩色画卷。",
+    "bossChar": "林",
+    "bossParts": ["木", "木"]
+  }
+]

@@ -1,0 +1,112 @@
+[
+  {
+    "id": "char-shan",
+    "char": "山",
+    "pinyin": "shan",
+    "world": "mountain",
+    "theme": "山形",
+    "words": ["山野", "高山", "山路"],
+    "hint": "像起伏的山峰轮廓。",
+    "repairLabel": "远山出现了轮廓",
+    "radical": "山"
+  },
+  {
+    "id": "char-shui",
+    "char": "水",
+    "pinyin": "shui",
+    "world": "mountain",
+    "theme": "河流",
+    "words": ["山水", "河水", "泉水"],
+    "hint": "像流动的水势，竖钩像水脉。",
+    "repairLabel": "山脚恢复了河流",
+    "radical": "水"
+  },
+  {
+    "id": "char-mu",
+    "char": "木",
+    "pinyin": "mu",
+    "world": "mountain",
+    "theme": "树木",
+    "words": ["木桥", "树林", "木屋"],
+    "hint": "像树干向上生长，左右伸出枝叶。",
+    "repairLabel": "山坡长出了树木",
+    "radical": "木"
+  },
+  {
+    "id": "char-huo",
+    "char": "火",
+    "pinyin": "huo",
+    "world": "mountain",
+    "theme": "火光",
+    "words": ["火光", "火种", "火山"],
+    "hint": "四散的点像跳动的火花。",
+    "repairLabel": "营地亮起了温暖火光",
+    "radical": "火"
+  },
+  {
+    "id": "char-tu",
+    "char": "土",
+    "pinyin": "tu",
+    "world": "mountain",
+    "theme": "土地",
+    "words": ["土地", "泥土", "土坡"],
+    "hint": "像地平线上竖起的一株幼苗。",
+    "repairLabel": "地面恢复了厚实土坡",
+    "radical": "土"
+  },
+  {
+    "id": "char-shi",
+    "char": "石",
+    "pinyin": "shi",
+    "world": "mountain",
+    "theme": "岩石",
+    "words": ["山石", "石桥", "石洞"],
+    "hint": "像一块压在山脚的石头。",
+    "repairLabel": "山壁显露出岩石纹理",
+    "radical": "石"
+  },
+  {
+    "id": "char-chu",
+    "char": "出",
+    "pinyin": "chu",
+    "world": "mountain",
+    "theme": "干扰",
+    "words": ["出去"],
+    "hint": "容易和山混淆，但下方多一层伸出。",
+    "repairLabel": "干扰字",
+    "radical": "凵"
+  },
+  {
+    "id": "char-yong",
+    "char": "永",
+    "pinyin": "yong",
+    "world": "mountain",
+    "theme": "干扰",
+    "words": ["永远"],
+    "hint": "像向四方散开的水势。",
+    "repairLabel": "干扰字",
+    "radical": "水"
+  },
+  {
+    "id": "char-da",
+    "char": "大",
+    "pinyin": "da",
+    "world": "mountain",
+    "theme": "干扰",
+    "words": ["大小"],
+    "hint": "像展开双臂的人形。",
+    "repairLabel": "干扰字",
+    "radical": "大"
+  },
+  {
+    "id": "char-lin",
+    "char": "林",
+    "pinyin": "lin",
+    "world": "mountain",
+    "theme": "BOSS",
+    "words": ["森林", "山林"],
+    "hint": "两棵树并肩站立。",
+    "repairLabel": "山野彻底苏醒",
+    "radical": "木"
+  }
+]
