@@ -271,44 +271,61 @@ class _LevelSpiritHintBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
+    return Container(
       decoration: BoxDecoration(
-        color: AppColors.ink.withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(16),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: AppColors.gold.withValues(alpha: 0.45),
+          color: const Color(0xFFE8F4F8),
+          width: 4,
         ),
+        boxShadow: const <BoxShadow>[
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 10,
+            offset: Offset(0, 4),
+          ),
+        ],
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Icon(
-              Icons.pets_rounded,
-              color: AppColors.gold.withValues(alpha: 0.95),
-              size: 22,
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: const BoxDecoration(
+                color: Color(0xFFFFF3E0),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.pets_rounded,
+                color: Color(0xFFFF9800),
+                size: 28,
+              ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(
-                    '字灵悄悄说',
-                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                          color: AppColors.parchment.withValues(alpha: 0.95),
-                          fontWeight: FontWeight.w800,
-                        ),
+                  const Text(
+                    '字灵悄悄说...',
+                    style: TextStyle(
+                      color: Color(0xFFFF9800),
+                      fontWeight: FontWeight.w900,
+                      fontSize: 15,
+                    ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     text,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppColors.parchment.withValues(alpha: 0.92),
-                          fontSize: 13,
-                          height: 1.4,
-                        ),
+                    style: const TextStyle(
+                      color: Color(0xFF4A4A4A),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w800,
+                      height: 1.4,
+                    ),
                   ),
                 ],
               ),
@@ -317,12 +334,20 @@ class _LevelSpiritHintBar extends StatelessWidget {
               onPressed: onCollapse,
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(
-                minWidth: 36,
-                minHeight: 36,
+                minWidth: 40,
+                minHeight: 40,
               ),
-              icon: Icon(
-                Icons.keyboard_arrow_up_rounded,
-                color: AppColors.parchment.withValues(alpha: 0.85),
+              icon: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: const BoxDecoration(
+                  color: Color(0xFFF5F5F5),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.keyboard_arrow_down_rounded,
+                  color: Color(0xFF9E9E9E),
+                  size: 24,
+                ),
               ),
               tooltip: '收起提示',
             ),

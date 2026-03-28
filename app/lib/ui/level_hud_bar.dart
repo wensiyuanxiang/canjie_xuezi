@@ -27,31 +27,32 @@ class LevelHudBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: AppColors.hudBar,
-          borderRadius: BorderRadius.circular(28),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(32),
           border: Border.all(
-            color: AppColors.gold.withValues(alpha: 0.5),
-            width: 1.5,
+            color: const Color(0xFFE8F4F8),
+            width: 4,
           ),
-          boxShadow: <BoxShadow>[
+          boxShadow: const <BoxShadow>[
             BoxShadow(
-              color: AppColors.ink.withValues(alpha: 0.1),
+              color: Colors.black12,
               blurRadius: 16,
-              offset: const Offset(0, 6),
+              offset: Offset(0, 8),
             ),
           ],
         ),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(4, 8, 6, 8),
+          padding: const EdgeInsets.fromLTRB(8, 12, 12, 12),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               _HudIconButton(
                 icon: Icons.close_rounded,
                 onPressed: onExit,
+                color: const Color(0xFFFF5252),
               ),
               Expanded(
                 child: Column(
@@ -66,41 +67,39 @@ class LevelHudBar extends StatelessWidget {
                             textAlign: TextAlign.center,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleSmall
-                                ?.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                  letterSpacing: 0.4,
-                                ),
+                            style: const TextStyle(
+                              color: Color(0xFF2C3E50),
+                              fontWeight: FontWeight.w900,
+                              fontSize: 18,
+                              letterSpacing: 1.0,
+                            ),
                           ),
                         ),
                         if (spiritCompact != null) ...<Widget>[
-                          const SizedBox(width: 6),
+                          const SizedBox(width: 8),
                           spiritCompact!,
                         ],
                       ],
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 4,
+                            horizontal: 16,
+                            vertical: 6,
                           ),
                           decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: <Color>[
-                                AppColors.gold.withValues(alpha: 0.25),
-                                AppColors.primary.withValues(alpha: 0.2),
-                              ],
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: AppColors.gold.withValues(alpha: 0.5),
-                            ),
+                            color: const Color(0xFFFFB74D),
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: const <BoxShadow>[
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 4,
+                                offset: Offset(0, 2),
+                              ),
+                            ],
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -108,19 +107,19 @@ class LevelHudBar extends StatelessWidget {
                               Text(
                                 targetGlyph,
                                 style: const TextStyle(
-                                  fontSize: 22,
+                                  fontSize: 26,
                                   fontWeight: FontWeight.w900,
-                                  color: AppColors.ink,
+                                  color: Colors.white,
                                 ),
                               ),
-                              const SizedBox(width: 8),
+                              const SizedBox(width: 10),
                               Text(
                                 missionPhrase,
                                 style: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w800,
-                                  color: AppColors.primaryDeep,
-                                  letterSpacing: 0.5,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w900,
+                                  color: Colors.white,
+                                  letterSpacing: 1.0,
                                 ),
                               ),
                             ],
@@ -129,19 +128,16 @@ class LevelHudBar extends StatelessWidget {
                       ],
                     ),
                     if (!status.ended) ...<Widget>[
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 12),
                       DecoratedBox(
                         decoration: BoxDecoration(
-                          color: AppColors.ink.withValues(alpha: 0.28),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: AppColors.gold.withValues(alpha: 0.28),
-                          ),
+                          color: const Color(0xFFF5F9FF),
+                          borderRadius: BorderRadius.circular(20),
                         ),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 6,
+                            horizontal: 12,
+                            vertical: 8,
                           ),
                           child: LevelHudStatusChips(snapshot: status),
                         ),
@@ -150,21 +146,15 @@ class LevelHudBar extends StatelessWidget {
                   ],
                 ),
               ),
-              TextButton(
-                onPressed: onFinishPlaceholder,
-                style: TextButton.styleFrom(
-                  foregroundColor: AppColors.primaryDeep,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  minimumSize: Size.zero,
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  textStyle: const TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 13,
-                    letterSpacing: 0.3,
+              Column(
+                children: <Widget>[
+                  const SizedBox(height: 4),
+                  _HudIconButton(
+                    icon: Icons.fast_forward_rounded,
+                    onPressed: onFinishPlaceholder,
+                    color: const Color(0xFF4CAF50),
                   ),
-                ),
-                child: const Text('结算'),
+                ],
               ),
             ],
           ),
@@ -175,22 +165,33 @@ class LevelHudBar extends StatelessWidget {
 }
 
 class _HudIconButton extends StatelessWidget {
-  const _HudIconButton({required this.icon, required this.onPressed});
+  const _HudIconButton({
+    required this.icon,
+    required this.onPressed,
+    required this.color,
+  });
 
   final IconData icon;
   final VoidCallback onPressed;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      shape: const CircleBorder(),
-      child: InkWell(
-        customBorder: const CircleBorder(),
-        onTap: onPressed,
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Icon(icon, color: AppColors.ink, size: 22),
+    return Container(
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.15),
+        shape: BoxShape.circle,
+      ),
+      child: Material(
+        color: Colors.transparent,
+        shape: const CircleBorder(),
+        child: InkWell(
+          customBorder: const CircleBorder(),
+          onTap: onPressed,
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Icon(icon, color: color, size: 26),
+          ),
         ),
       ),
     );

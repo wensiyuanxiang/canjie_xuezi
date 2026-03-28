@@ -3,22 +3,16 @@ import 'package:flutter/material.dart';
 
 import '../data/models/level_config.dart';
 
+/// 水果忍者式：自屏幕 0.25–0.75 高度带下缘向上抛出，仅受重力，不贴边弹跳。
 class FlyingGlyph extends PositionComponent {
   FlyingGlyph({
     required this.glyph,
     required this.isTarget,
     required Vector2 velocity,
+    required this.gravity,
     required this.hitRadius,
     required Vector2 position,
-    required double xMin,
-    required double xMax,
-    required double yMin,
-    required double yMax,
   })  : _velocity = velocity.clone(),
-        _xMin = xMin,
-        _xMax = xMax,
-        _yMin = yMin,
-        _yMax = yMax,
         super(
           anchor: Anchor.center,
           position: position,
@@ -27,10 +21,7 @@ class FlyingGlyph extends PositionComponent {
   final String glyph;
   final bool isTarget;
   final double hitRadius;
-  final double _xMin;
-  final double _xMax;
-  final double _yMin;
-  final double _yMax;
+  final double gravity;
   final Vector2 _velocity;
 
   bool sliced = false;
@@ -74,22 +65,8 @@ class FlyingGlyph extends PositionComponent {
       return;
     }
     age += dt;
+    _velocity.y += gravity * dt;
     position += _velocity * dt;
-
-    if (position.x < _xMin) {
-      position.x = _xMin;
-      _velocity.x = _velocity.x.abs();
-    } else if (position.x > _xMax) {
-      position.x = _xMax;
-      _velocity.x = -_velocity.x.abs();
-    }
-    if (position.y < _yMin) {
-      position.y = _yMin;
-      _velocity.y = _velocity.y.abs();
-    } else if (position.y > _yMax) {
-      position.y = _yMax;
-      _velocity.y = -_velocity.y.abs();
-    }
   }
 
   Vector2 get hitCenter => position;

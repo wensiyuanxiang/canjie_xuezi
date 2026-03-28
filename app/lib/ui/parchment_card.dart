@@ -19,24 +19,22 @@ class ParchmentCard extends StatelessWidget {
     return Container(
       margin: margin,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(22),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: <Color>[
-            AppColors.parchment,
-            AppColors.parchmentDeep.withValues(alpha: 0.92),
-          ],
-        ),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(32),
         border: Border.all(
-          color: AppColors.gold.withValues(alpha: 0.45),
-          width: 2,
+          color: Colors.white,
+          width: 4,
         ),
-        boxShadow: <BoxShadow>[
+        boxShadow: const <BoxShadow>[
           BoxShadow(
-            color: AppColors.ink.withValues(alpha: 0.08),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
+            color: Colors.black12,
+            blurRadius: 16,
+            offset: Offset(0, 8),
+          ),
+          BoxShadow(
+            color: Color(0xFFE0E0E0),
+            blurRadius: 0,
+            offset: Offset(0, 6),
           ),
         ],
       ),
@@ -60,34 +58,44 @@ class GameStatTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
-        color: AppColors.bg.withValues(alpha: 0.65),
-        borderRadius: BorderRadius.circular(14),
+        color: const Color(0xFFF5F9FF),
+        borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: AppColors.gold.withValues(alpha: 0.22),
+          color: const Color(0xFFD6E4FF),
+          width: 2,
         ),
       ),
       child: Row(
         children: <Widget>[
-          Icon(icon, color: AppColors.goldDim, size: 22),
-          const SizedBox(width: 12),
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: const Color(0xFF4CA1AF), size: 24),
+          ),
+          const SizedBox(width: 16),
           Expanded(
             child: Text(
               label,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.ink,
-                    fontWeight: FontWeight.w600,
-                  ),
+              style: const TextStyle(
+                fontSize: 18,
+                color: Color(0xFF4A4A4A),
+                fontWeight: FontWeight.w800,
+              ),
             ),
           ),
           Text(
             value,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: AppColors.primaryDeep,
-                  fontWeight: FontWeight.w800,
-                ),
+            style: const TextStyle(
+              fontSize: 24,
+              color: Color(0xFFFF8C00),
+              fontWeight: FontWeight.w900,
+            ),
           ),
         ],
       ),
@@ -105,19 +113,22 @@ class ParchmentSectionTitle extends StatelessWidget {
     return Row(
       children: <Widget>[
         Container(
-          width: 4,
-          height: 18,
+          width: 8,
+          height: 24,
           decoration: BoxDecoration(
-            color: AppColors.gold,
-            borderRadius: BorderRadius.circular(2),
+            color: const Color(0xFFFF8C00),
+            borderRadius: BorderRadius.circular(4),
           ),
         ),
-        const SizedBox(width: 10),
+        const SizedBox(width: 12),
         Text(
           text,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                letterSpacing: 1.0,
-              ),
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w900,
+            color: Color(0xFF2C3E50),
+            letterSpacing: 1.0,
+          ),
         ),
       ],
     );

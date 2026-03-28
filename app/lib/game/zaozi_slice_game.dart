@@ -169,27 +169,34 @@ class ZaoziSliceGame extends FlameGame with PanDetector {
       glyph = pool[_random.nextInt(pool.length)];
     }
 
-    final double ySpan = _playYMax - _playYMin;
-    final double yInset = min(90.0, ySpan * 0.14);
-    final double yLo = _playYMin + yInset;
-    final double yHi = _playYMax - yInset;
-    final double y0 = yLo + _random.nextDouble() * (yHi - yLo);
+    const double gravity = 680;
     final double x0 =
         _playXMin + _random.nextDouble() * (_playXMax - _playXMin);
-    final double vx = -190 + _random.nextDouble() * 380;
-    final double vy = -130 + _random.nextDouble() * 260;
+    final double y0 = _playYMax;
+    final double playH = _playYMax - _playYMin;
+    final double riseMin = playH * 0.45;
+    final double riseMax = playH * 0.92;
+    final double vMin = sqrt(2 * gravity * riseMin);
+    final double vMax = sqrt(2 * gravity * riseMax);
+    final double upwardSpeed =
+        vMin + _random.nextDouble() * (vMax - vMin);
+    final double vx =
+        (-1.0 + 2 * _random.nextDouble()) * (80 + _random.nextDouble() * 120);
+
+    debugPrint(
+      '[SPAWN] size=${size.x.toInt()}x${size.y.toInt()} '
+      'y0=${y0.toInt()} peak=${(y0 - upwardSpeed * upwardSpeed / (2 * gravity)).toInt()} '
+      'playY=${_playYMin.toInt()}-${_playYMax.toInt()} vy=${(-upwardSpeed).toInt()}',
+    );
 
     world.add(
       FlyingGlyph(
         glyph: glyph,
         isTarget: glyph == levelConfig.targetGlyph,
-        velocity: Vector2(vx, vy),
+        gravity: gravity,
+        velocity: Vector2(vx, -upwardSpeed),
         hitRadius: 42,
         position: Vector2(x0, y0),
-        xMin: _playXMin,
-        xMax: _playXMax,
-        yMin: _playYMin,
-        yMax: _playYMax,
       )..priority = 10,
     );
   }
@@ -199,12 +206,34 @@ class ZaoziSliceGame extends FlameGame with PanDetector {
       if (g.sliced) {
         continue;
       }
-      if (g.isTarget && !g.countedMiss && g.age > 14) {
+      if (g.position.y > _playYMax + 56) {
+        if (g.isTarget && !g.countedMiss) {
+          g.countedMiss = true;
+          _missed++;
+          _combo = 0;
+        }
+        g.removeFromParent();
+        continue;
+      }
+      if (g.position.y < _playYMin - 100) {
+        g.removeFromParent();
+        continue;
+      }
+      if (g.position.x < -72 || g.position.x > size.x + 72) {
+        if (g.isTarget && !g.countedMiss) {
+          g.countedMiss = true;
+          _missed++;
+          _combo = 0;
+        }
+        g.removeFromParent();
+        continue;
+      }
+      if (g.isTarget && !g.countedMiss && g.age > 24) {
         g.countedMiss = true;
         _missed++;
         _combo = 0;
         g.removeFromParent();
-      } else if (!g.isTarget && g.age > 20) {
+      } else if (!g.isTarget && g.age > 28) {
         g.removeFromParent();
       }
     }
