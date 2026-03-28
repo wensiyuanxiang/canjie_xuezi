@@ -1,0 +1,43 @@
+---
+description: 仓颉学字（001_zaozi）项目规约：MVP 范围、React+Phaser 边界、目录与资源命名
+alwaysApply: true
+---
+
+# 仓颉学字项目规约（摘要）
+
+完整条文见 `docs/architecture/20260328-project-specification.md`。以下为 AI 改代码时必须遵守的硬约束。
+
+## 优先级
+
+执行标准以 `docs/architecture/20260328-project-specification.md` 为准；其次 `docs/product/20260328-collaboration-contract.md` 及黑客松计划、素材手册、GDD。
+
+## 技术栈
+
+- Vite + React 18 + TypeScript（strict）+ Phaser 3；部署目标 Vercel。
+- 数据仅本地 JSON：`src/data/characters.json`、`src/data/levels.json`（山野 `level-1`～`level-5`、`level-6-boss`）。
+
+## 目录与资源
+
+- 资产必须按协作契约分层：`src/assets/images/{bg,character,game,particle,ui,rank}/`、`audio/{bgm,sfx}/`、`fonts/`；禁止往 `images/` 根目录堆新文件。
+- 文件名：全小写、kebab-case、无中文、无空格；禁止引用已废弃资源名（见协作契约第四节）。
+- P0 缺失时用占位，路径集中管理；不因单资源阻塞主流程。
+
+## React / Phaser
+
+- React：首页、地图、结算、外层状态。
+- Phaser：关卡内玩法与特效；结束时只向 React 返回结构化结果，不操作 React DOM。
+- UI 不进 Phaser 内部作为主方案。
+
+## 产品范围
+
+- 仅黑客松 MVP：不做八大世界全量、三纪全量、天书残页关、功能词、大规模字库等（详见协作契约）。
+- 扩展留接口即可，不一次实现 GDD 全系统设计。
+
+## 视觉与 AI
+
+- 使用规约中的 CSS 变量；竖屏优先。
+- 结算页 AI：单次调用 + 本地回退；无聊天；TTS 用 Web Speech API，可静默降级。
+
+## Git
+
+- Conventional Commits；提交粒度小；不重命名素材与改玩法混提交。
